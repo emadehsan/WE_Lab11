@@ -49,11 +49,54 @@ function saveTweet() {
 
 
 
-function getTweets($conn) {
-	$email = addslashes($_GET['email']);
+function getClasses() {
 
-	$query = "SELECT text FROM tweet WHERE email = " . $email;
+	$conn = connect();
+	// $email = addslashes($_GET['email']);
+	$teacher_id = $_SESSION['user'][0];
+
+	// $query = "SELECT text FROM tweet WHERE email = " . $email;
+	$query = "SELECT * FROM class WHERE teacherid = " . $teacher_id;
 	$result = mysqli_query($conn, $query);
 
-	return json_encode($result);
+	// echo json_encode($result);
+	return $result;
+}
+
+function class($id) {
+
+	$conn = connect();
+	// $email = addslashes($_GET['email']);
+	$teacher_id = $_SESSION['user'][0];
+
+	// $query = "SELECT text FROM tweet WHERE email = " . $email;
+	$query = "SELECT * FROM attendance WHERE classid = " . $id;
+	$result = mysqli_query($conn, $query);
+
+	// echo json_encode($result);
+	return $result;
+}
+
+
+function loggedin($who, $user) 
+{
+	// user has logged in
+	// keep track in header
+	
+	if ($who == 'teacher' || $who == 'student') {
+		$_SESSION['who'] = $who;
+		$_SESSION['logged_id'] = $user[0];
+		$_SESSION['user'] = $user;
+	}
+
+	if ($who == 'teacher') {
+		header('Location: teacher.php');
+	}
+	else if ($who == 'student') {
+		header('Location: student.php');
+	}
+}
+
+function isLoggedin() {
+	return $_SESSION['logged_id'] > 0;
 }

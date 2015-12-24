@@ -7,10 +7,16 @@ if ( isset($_POST['email']) ) {
 		$user = login();
 
 		if ($user ) {
-			if ($user[5] == 'student') {
-				header('Location: student.php');
-			} else if ($user[5] == 'teacher') {
-				header('Location: teacher.php');
+			if ($user[5] == 'student' || $user[5] == 'teacher') {
+				session_start();
+				// loggedin($user[5], $user);
+
+				// $_SESSION['who'] = ;
+				$who = $user[5];
+				$_SESSION['logged_id'] = $user[0];
+				$_SESSION['user'] = $user;
+				header('Location: '. "$who.php");
+			}
 		}
 	}
 }
@@ -44,12 +50,16 @@ if ( isset($_POST['email']) ) {
 
 		<span style="color:red;">
 		<?php
-			if ((! $user ) && isset( $_POST['email'] ) ) {
-				echo "<p>Invalid User Credentials</p>";
+			if (isset( $_POST['email'] )) {
+				if (! $user) {
+					echo "<p>Invalid User Credentials</p>";
+				}
+				else {
+					echo '<p>Success</p>';
+				}	
 			}
-			else {
-				echo 'Success';
-			}
+			
+
 		 ?>
 		</span>
 
@@ -64,6 +74,7 @@ if ( isset($_POST['email']) ) {
 				  echo 'Email Required!';
 			  }
 		  }
+
 	   ?>
 	  </span>
       </div>
@@ -76,11 +87,10 @@ if ( isset($_POST['email']) ) {
         <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="">
 		<span class="help-block" style="color: red">
 		<?php
-			if ( isset($_POST['email']) ) {
-			    if (! isset($_POST['password']) ) {
+			if ( isset($_POST['email']) && !isset($_POST['password']) ) {
 					echo 'Password Required!';
-				}
 			}
+
 		 ?>
 		</span>
       </div>
